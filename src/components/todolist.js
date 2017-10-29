@@ -119,8 +119,17 @@ class TodoList extends Component {
             }
         }
         localStorage.setItem("todos"+parentId, JSON.stringify(parentTodos));
-        localStorage.removeItem("todos"+oldTodo[0].id);
+        this.deleteDfs(oldTodo[0].id);
         this.setState({deleted: true});
+    }
+    deleteDfs(id) {
+        let children = JSON.parse(localStorage.getItem("todos"+id));
+        if (children) {
+            for (let i = 0; i < children.length; i++) {
+                this.deleteDfs(children[i].id);
+            }
+        }
+        localStorage.removeItem("todos"+id);
     }
     render() {
         return this.state.deleted ? (<span></span>) : (
