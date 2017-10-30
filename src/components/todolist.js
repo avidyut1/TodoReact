@@ -42,15 +42,17 @@ class TodoList extends Component {
     toggleDone() {
         let parentId = this.props.parentid;
         let oldTodo = null;
+        let position = -1;
         let parentTodos = JSON.parse(localStorage.getItem("todos"+parentId));
         for(let i = 0; i < parentTodos.length; i++){
             if (parentTodos[i].id === this.props.id) {
                 oldTodo = parentTodos.splice(i, 1);
+                position = i;
                 break;
             }
         }
         oldTodo[0].done = !oldTodo[0].done;
-        parentTodos.push(oldTodo[0]);
+        parentTodos.splice(position, 0, oldTodo[0]);
         this.setState({
             done: oldTodo[0].done
         });
@@ -91,15 +93,17 @@ class TodoList extends Component {
     updateTodo(){
         let parentId = this.props.parentid;
         let oldTodo = null;
+        let position = -1;
         let parentTodos = JSON.parse(localStorage.getItem("todos"+parentId));
         for(let i = 0; i < parentTodos.length; i++){
             if (parentTodos[i].id === this.props.id) {
                 oldTodo = parentTodos.splice(i, 1);
+                position = i;
                 break;
             }
         }
         oldTodo[0].todo = this.state.newTodoVal;
-        parentTodos.push(oldTodo[0]);
+        parentTodos.splice(position, 0, oldTodo[0]);
         localStorage.setItem("todos"+parentId, JSON.stringify(parentTodos));
         this.setState({thisTodo: this.state.newTodoVal, edit: false});
     }
