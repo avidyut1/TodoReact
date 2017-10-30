@@ -11,7 +11,8 @@ class TodoList extends Component {
             for(let i = 0; i < localStorageTodos.length; i++) {
                 newChildrenComponent.push(
                     <TodoList done={localStorageTodos[i].done} parentid={this.props.id}
-                              id={localStorageTodos[i].id} key={localStorageTodos[i].key} todo={localStorageTodos[i].todo}/>)
+                              id={localStorageTodos[i].id} key={localStorageTodos[i].key}
+                              todo={localStorageTodos[i].todo} indexInParent={i}/>)
             }
             this.state = {
                 thisTodo: this.props.todo,
@@ -43,16 +44,9 @@ class TodoList extends Component {
     }
     toggleDone() {
         let parentId = this.props.parentid;
-        let oldTodo = null;
-        let position = -1;
+        let position = this.props.indexInParent;
         let parentTodos = JSON.parse(localStorage.getItem("todos"+parentId));
-        for(let i = 0; i < parentTodos.length; i++){
-            if (parentTodos[i].id === this.props.id) {
-                oldTodo = parentTodos.splice(i, 1);
-                position = i;
-                break;
-            }
-        }
+        let oldTodo = parentTodos.splice(position, 1);
         oldTodo[0].done = !oldTodo[0].done;
         parentTodos.splice(position, 0, oldTodo[0]);
         this.setState({
@@ -68,7 +62,7 @@ class TodoList extends Component {
         let newId = uniqueId();
         let key = this.state.children.length;
         this.setState({
-            children: [...this.state.children, <TodoList id={newId} parentid={this.props.id} todo={this.state.todo} key={key} done={false}/>]
+            children: [...this.state.children, <TodoList id={newId} parentid={this.props.id} indexInParent={key} todo={this.state.todo} key={key} done={false}/>]
         });
         this.refs.todoInput.value = "";
         let data = {id: newId, key: key, todo: this.state.todo, done: false, parentid: this.props.id};
@@ -94,16 +88,9 @@ class TodoList extends Component {
     }
     updateTodo(){
         let parentId = this.props.parentid;
-        let oldTodo = null;
-        let position = -1;
+        let position = this.props.indexInParent;
         let parentTodos = JSON.parse(localStorage.getItem("todos"+parentId));
-        for(let i = 0; i < parentTodos.length; i++){
-            if (parentTodos[i].id === this.props.id) {
-                oldTodo = parentTodos.splice(i, 1);
-                position = i;
-                break;
-            }
-        }
+        let oldTodo = parentTodos.splice(position, 1);
         oldTodo[0].todo = this.state.newTodoVal;
         parentTodos.splice(position, 0, oldTodo[0]);
         localStorage.setItem("todos"+parentId, JSON.stringify(parentTodos));
@@ -116,14 +103,8 @@ class TodoList extends Component {
     }
     delete() {
         let parentId = this.props.parentid;
-        let oldTodo = null;
         let parentTodos = JSON.parse(localStorage.getItem("todos"+parentId));
-        for(let i = 0; i < parentTodos.length; i++){
-            if (parentTodos[i].id === this.props.id) {
-                oldTodo = parentTodos.splice(i, 1);
-                break;
-            }
-        }
+        let oldTodo = parentTodos.splice(this.props.indexInParent, 1);
         localStorage.setItem("todos"+parentId, JSON.stringify(parentTodos));
         this.deleteDfs(oldTodo[0].id);
         this.setState({deleted: true});
