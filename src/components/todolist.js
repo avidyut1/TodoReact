@@ -15,6 +15,7 @@ class TodoList extends Component {
             }
             this.state = {
                 thisTodo: this.props.todo,
+                newTodoVal: this.props.todo,
                 todo: '',
                 children: newChildrenComponent,
                 edit: false,
@@ -25,6 +26,7 @@ class TodoList extends Component {
         else {
             this.state = {
                 thisTodo: this.props.todo,
+                newTodoVal: this.props.todo,
                 todo: '',
                 children: [],
                 edit: false,
