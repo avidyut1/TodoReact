@@ -62,7 +62,7 @@ class TodoList extends Component {
         let newId = uniqueId();
         let key = this.state.children.length;
         this.setState({
-            children: [...this.state.children, <TodoList id={newId} parentid={this.props.id} indexInParent={key} todo={this.state.todo} key={key} done={false}/>]
+            children: [...this.state.children, <TodoList id={newId} parentid={this.props.id} indexInParent={key - 1} todo={this.state.todo} key={key} done={false}/>]
         });
         this.refs.todoInput.value = "";
         let data = {id: newId, key: key, todo: this.state.todo, done: false, parentid: this.props.id};
